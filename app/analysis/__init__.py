@@ -3,14 +3,17 @@ compare a local GPU model against Claude-via-subscription on the same passage.""
 from __future__ import annotations
 
 from .base import AnalysisBackend
+from .claude_agent import ClaudeAgentAnalysis
 from .claude_cli import ClaudeCLIAnalysis
 from .local_llm import LocalLLMAnalysis
 from .anthropic_api import AnthropicAPIAnalysis
 from .mock import MockAnalysis
 
-# Preference for ANALYSIS_BACKEND=auto: Claude CLI (uses Max subscription) first,
-# then local GPU model, then API, then mock.
+# Preference for ANALYSIS_BACKEND=auto: Claude via the Agent SDK (plan auth, no
+# API key) first, then the older claude_cli shell-out as a fallback, then the
+# local GPU model, then the (API-key) API, then mock.
 _REGISTRY: list[type[AnalysisBackend]] = [
+    ClaudeAgentAnalysis,
     ClaudeCLIAnalysis,
     LocalLLMAnalysis,
     AnthropicAPIAnalysis,

@@ -18,7 +18,10 @@ pydantic>=2.6
 #   pip install fugashi unidic-lite
 
 # --- Analysis backends ---
-# claude_cli: install the Claude Code CLI separately (uses your subscription):
-#   npm install -g @anthropic-ai/claude-code
-# anthropic_api (optional): pip install anthropic
+# claude_agent (preferred, plan auth via Agent SDK — no API key):
+#   pip install claude-agent-sdk
+#   npm install -g @anthropic-ai/claude-code   # the engine it drives
+#   then run `claude` once to sign in. Leave ANTHROPIC_API_KEY UNSET for plan billing.
+# claude_cli (fallback, also plan auth): just the Claude Code CLI above (no pip pkg).
+# anthropic_api (optional, API-key billing): set ANTHROPIC_API_KEY (httpx, no SDK needed)
 # local_llm: no extra deps here — talks to an OpenAI-compatible endpoint via httpx

@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -50,7 +51,9 @@ async def analyze(
     t0 = time.perf_counter()
     try:
         ocr = ocr_mod.get_ocr_backend(ocr_backend)
-        ocr_result = ocr.recognize(image_bytes, vertical=vertical)
+        # OCR (and analysis below) are blocking; run them off the event loop so
+        # the server stays responsive and async backends can manage their own loop.
+        ocr_result = await run_in_threadpool(ocr.recognize, image_bytes, vertical)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OCR failed: {e}")
     timings["ocr_ms"] = int((time.perf_counter() - t0) * 1000)
@@ -69,7 +72,7 @@ async def analyze(
     t1 = time.perf_counter()
     try:
         engine = analysis_mod.get_analysis_backend(analysis_backend)
-        result = engine.analyze(ocr_result.text, token_hint=token_hint)
+        result = await run_in_threadpool(engine.analyze, ocr_result.text, token_hint)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {e}")
     timings["analysis_ms"] = int((time.perf_counter() - t1) * 1000)

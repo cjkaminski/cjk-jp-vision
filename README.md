@@ -29,8 +29,9 @@ you can optionally use Claude or a hosted API for the analysis step).
  │               │ ◀─────────── │                  ─ manga-ocr (any OS) │
  └───────────────┘   JSON       │  2. MeCab tokenize (optional)         │
                                 │  3. Analysis backend                  │
-                                │     ─ claude_cli  (Max subscription)  │
-                                │     ─ local_llm   (your GPU box)      │
+                                │     ─ claude_agent (Agent SDK, plan)  │
+                                │     ─ claude_cli   (plan, CLI)        │
+                                │     ─ local_llm    (your GPU box)     │
                                 │     ─ anthropic_api (optional)        │
                                 └──────────────────────────────────────┘
 ```
@@ -50,8 +51,11 @@ engines per request so you can **compare quality** (e.g. local model vs. Claude)
 
 ## Using your Claude plan for the analysis step (billing, as of June 2026)
 
-The **`claude_cli` backend** shells out to `claude -p`, authenticated with your
-Claude plan — **no API key required**. How that's billed depends on the date:
+Two backends use your Claude plan with **no API key**: **`claude_agent`**
+(preferred — drives the Claude Agent SDK directly and reads structured output)
+and **`claude_cli`** (a fallback that shells out to `claude -p`). Both
+authenticate the same way — sign in once with the Claude Code CLI (`claude`) —
+and draw from the same plan budget. How that's billed depends on the date:
 
 - **Until June 15, 2026:** `claude -p` / Agent SDK usage counts against your
   plan's normal subscription usage limits (the same pool as interactive Claude
@@ -94,8 +98,10 @@ pip install manga-ocr                                          # any OS (pulls t
 # Tokenizer (recommended): deterministic word segmentation + readings
 pip install fugashi unidic-lite
 
-# Analysis via your Max subscription:
-npm install -g @anthropic-ai/claude-code   # then run `claude` once to sign in
+# Analysis via your Max subscription (no API key):
+npm install -g @anthropic-ai/claude-code   # the engine; run `claude` once to sign in
+pip install claude-agent-sdk               # the preferred claude_agent backend
+# Leave ANTHROPIC_API_KEY unset so these bill to your plan, not pay-as-you-go.
 
 # Analysis via local GPU model (on the Linux box):
 #   ollama serve && ollama pull qwen2.5:14b-instruct
@@ -131,7 +137,8 @@ app/
   config.py        env / .env settings
   schema.py        shared pydantic models
   ocr/             apple_vision · manga_ocr · mock  (+ base, factory)
-  analysis/        claude_cli · local_llm · anthropic_api · mock (+ prompt, base)
+  analysis/        claude_agent · claude_cli · local_llm · anthropic_api · mock
+                   (+ prompt, base)
   tokenize_ja.py   optional MeCab/fugashi tokenizer
 web/               index.html · app.js · style.css  (the camera page)
 scripts/           run.sh · smoke_test.py
