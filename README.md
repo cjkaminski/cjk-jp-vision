@@ -122,6 +122,22 @@ certificate**:
   you later add the live-preview camera (`getUserMedia`), which iOS requires
   HTTPS for. The current file-capture UI does not need it.
 
+## iOS browser notes (Safari / Brave / Firefox)
+
+On iOS every browser uses WebKit, so behavior is essentially Safari's across the
+board. Specifics for this app:
+
+- The camera uses `<input ... capture>` (not `getUserMedia`), which works in
+  Safari, Brave, and Firefox alike — and avoids the third-party `getUserMedia`
+  quirks iOS used to have.
+- **Cropping happens in the browser** on a `<canvas>`, then exports JPEG. This
+  also normalizes iOS **HEIC** photos to JPEG, so the server never sees HEIC.
+- **Brave only:** its anti-fingerprinting "farbling" adds imperceptible noise to
+  canvas exports. It shouldn't affect OCR; if results ever look worse *only* in
+  Brave, lower Shields for the site to rule it out.
+- The crop canvas sets `touch-action: none` so dragging selects a region instead
+  of scrolling the page.
+
 ## Tips for good OCR on book pages
 
 - Vertical novels: keep the **"Vertical text (tategaki)"** toggle on.
@@ -147,6 +163,7 @@ scripts/           run.sh · smoke_test.py
 ## Status
 
 Prototype. The pipeline is wired and tested end-to-end with mock backends; the
-real OCR/LLM engines are integrated and ready to enable on your hardware. Next
-candidates: in-browser crop-to-passage before upload, JMdict gloss enrichment,
-and saving a study log of looked-up sentences.
+real OCR/LLM engines are integrated and ready to enable on your hardware.
+In-browser crop-to-passage (with HEIC→JPEG normalization) is implemented. Next
+candidates: JMdict gloss enrichment, and saving a study log of looked-up
+sentences.

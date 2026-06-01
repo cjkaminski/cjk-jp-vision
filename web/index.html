@@ -21,7 +21,16 @@
         <span>Take / choose a photo</span>
       </label>
       <input id="file" type="file" accept="image/*" capture="environment" hidden />
-      <img id="preview" alt="" hidden />
+
+      <div id="cropwrap" class="cropwrap" hidden>
+        <canvas id="cropCanvas"></canvas>
+        <div class="crophint">
+          <span id="cropState">Whole image</span>
+          <button id="reset" type="button" class="ghost">Reset crop</button>
+        </div>
+        <p class="hinttext">Drag across the passage to crop to it. Release to set;
+          tap “Reset crop” to use the whole image.</p>
+      </div>
     </section>
 
     <section class="controls">
@@ -71,6 +80,7 @@
     </section>
   </main>
 
+  <script src="/static/crop.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

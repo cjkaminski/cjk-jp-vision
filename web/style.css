@@ -45,12 +45,33 @@ section { margin-top: 18px; }
 .shoot:active { background: var(--panel-2); border-color: var(--accent); }
 .shoot .icon { font-size: 2.4rem; }
 
-#preview {
+.cropwrap { margin-top: 14px; }
+#cropCanvas {
   display: block;
   max-width: 100%;
-  margin: 14px auto 0;
+  margin: 0 auto;
   border-radius: var(--radius);
   border: 1px solid #2c303b;
+  touch-action: none; /* drag selects a region instead of scrolling the page */
+  cursor: crosshair;
+}
+.crophint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+#cropState { font-size: 0.85rem; color: var(--muted); }
+.hinttext { font-size: 0.78rem; color: var(--muted); margin: 6px 0 0; }
+button.ghost {
+  background: transparent;
+  color: var(--accent-2);
+  border: 1px solid #333845;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 .controls { background: var(--panel); border-radius: var(--radius); padding: 14px; }

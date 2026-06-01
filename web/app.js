@@ -2,12 +2,16 @@
 
 const $ = (id) => document.getElementById(id);
 const fileInput = $("file");
-const preview = $("preview");
+const cropwrap = $("cropwrap");
+const cropState = $("cropState");
 const goBtn = $("go");
 const statusEl = $("status");
 const resultEl = $("result");
 
-let selectedFile = null;
+JPCrop.init($("cropCanvas"));
+JPCrop.setOnChange((hasSel) => {
+  cropState.textContent = hasSel ? "Cropped to selection" : "Whole image";
+});
 
 // --- Populate backend dropdowns from /health so the UI reflects what's
 //     actually installed, and you can switch engines to compare. ---
@@ -38,24 +42,40 @@ function fillSelect(sel, backends) {
 }
 
 // --- Capture ---
-fileInput.addEventListener("change", () => {
+fileInput.addEventListener("change", async () => {
   const f = fileInput.files[0];
   if (!f) return;
-  selectedFile = f;
-  preview.src = URL.createObjectURL(f);
-  preview.hidden = false;
-  goBtn.disabled = false;
+  try {
+    await JPCrop.load(f);
+    cropwrap.hidden = false;
+    cropState.textContent = "Whole image";
+    goBtn.disabled = false;
+    resultEl.hidden = true;
+    statusEl.hidden = true;
+  } catch (e) {
+    showStatus("Error loading photo: " + e.message, true);
+  }
 });
+
+$("reset").addEventListener("click", () => JPCrop.reset());
 
 // --- Analyze ---
 goBtn.addEventListener("click", async () => {
-  if (!selectedFile) return;
   goBtn.disabled = true;
   resultEl.hidden = true;
   showStatus("Uploading & running OCR + analysis… (first run loads models, give it a moment)");
 
+  let blob;
+  try {
+    blob = await JPCrop.getBlob();
+  } catch (e) {
+    showStatus("Could not prepare image: " + e.message, true);
+    goBtn.disabled = false;
+    return;
+  }
+
   const fd = new FormData();
-  fd.append("image", selectedFile);
+  fd.append("image", blob, "crop.jpg");
   fd.append("ocr_backend", $("ocr").value);
   fd.append("analysis_backend", $("analysis").value);
   fd.append("vertical", $("vertical").checked ? "true" : "false");
