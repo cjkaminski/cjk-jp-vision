@@ -48,14 +48,30 @@ engines per request so you can **compare quality** (e.g. local model vs. Claude)
   OpenAI-compatible endpoint; point `LOCAL_LLM_BASE_URL` at it for the
   fully-local analysis engine.
 
-## A note on "using my Max subscription" (important)
+## Using your Claude plan for the analysis step (billing, as of June 2026)
 
-Your **Max subscription is not the same as Anthropic API credits** — there's no
-bundled API spend, and an API key bills separately. But you *can* use your
-subscription for the analysis step via the **`claude_cli` backend**, which shells
-out to the Claude Code CLI (authenticated with your plan). That's the
-no-API-key path. The `anthropic_api` backend is also included if you ever want
-to use a real API key (billed separately).
+The **`claude_cli` backend** shells out to `claude -p`, authenticated with your
+Claude plan — **no API key required**. How that's billed depends on the date:
+
+- **Until June 15, 2026:** `claude -p` / Agent SDK usage counts against your
+  plan's normal subscription usage limits (the same pool as interactive Claude
+  Code and chat).
+- **From June 15, 2026:** Agent SDK and `claude -p` usage no longer counts
+  toward your subscription limits. Instead, plans receive a **separate monthly
+  Agent SDK credit** that explicitly covers the `claude -p` command and
+  third-party apps built on the Agent SDK — i.e. this backend. Amounts:
+  **Pro $20/mo, Max 20x $200/mo, Team Premium $100/seat**. It refreshes each
+  billing cycle and does not roll over. When exhausted, overflow bills at
+  standard API rates *only if* you've enabled pay-as-you-go usage credits.
+
+So on **Max 20x** you effectively get ~$200/month of dedicated, isolated budget
+for this app's Claude analysis, separate from your chat usage. (The lower Max
+5x tier is not listed at the $200 amount.) See Anthropic's help article:
+<https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan>
+
+The `anthropic_api` backend remains available if you'd rather use a real API
+key — that path bills as ordinary pay-as-you-go API usage, separate from the
+above.
 
 ## Quick start
 

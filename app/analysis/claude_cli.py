@@ -1,9 +1,11 @@
-"""Analysis via the Claude Code CLI. This authenticates with your Max
-subscription (no API key, no per-call API billing). We shell out to
-`claude -p` with the prompt and parse the JSON it returns.
+"""Analysis via the Claude Code CLI. Authenticates with your Claude plan, so
+no API key is needed. We shell out to `claude -p` and parse the JSON it returns.
 
-This is the "use my subscription" path you asked about: the Anthropic *API*
-needs separate billing, but the CLI runs under your existing Claude plan."""
+Billing (as of June 2026): before 2026-06-15 this draws from your normal
+subscription usage limits; from 2026-06-15 it draws from a separate monthly
+Agent SDK credit (Max 20x: ~$200/mo) that explicitly covers `claude -p` and
+apps built on the Agent SDK. See README for details. The Anthropic *API*
+(anthropic_api backend) bills separately as pay-as-you-go."""
 from __future__ import annotations
 
 import shutil
