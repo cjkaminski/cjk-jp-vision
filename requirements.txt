@@ -1,0 +1,24 @@
+# --- Core server (always needed) ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9   # form/file uploads
+Pillow>=10.0              # image decode / preprocessing
+httpx>=0.27               # talking to local LLM / Anthropic API
+pydantic>=2.6
+
+# --- OCR backends (optional; install what your platform supports) ---
+# manga-ocr: works on any platform (Mac/Linux/Win). Pulls in torch.
+#   pip install manga-ocr
+#
+# Apple Vision (macOS only) needs pyobjc Vision/Quartz bindings:
+#   pip install pyobjc-framework-Vision pyobjc-framework-Quartz
+
+# --- Tokenizer (optional but recommended for word breakdown) ---
+# fugashi + unidic-lite gives a self-contained MeCab tokenizer:
+#   pip install fugashi unidic-lite
+
+# --- Analysis backends ---
+# claude_cli: install the Claude Code CLI separately (uses your subscription):
+#   npm install -g @anthropic-ai/claude-code
+# anthropic_api (optional): pip install anthropic
+# local_llm: no extra deps here — talks to an OpenAI-compatible endpoint via httpx

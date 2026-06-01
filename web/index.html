@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>JP Vision — read Japanese books</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>JP&nbsp;Vision</h1>
+    <p class="tag">Photograph a passage · OCR · translate &amp; break down grammar</p>
+  </header>
+
+  <main>
+    <!-- The capture input: on iOS this opens the native camera. Works over
+         plain HTTP (no getUserMedia), so Tailscale / local network is fine. -->
+    <section class="capture">
+      <label class="shoot" for="file">
+        <span class="icon">📷</span>
+        <span>Take / choose a photo</span>
+      </label>
+      <input id="file" type="file" accept="image/*" capture="environment" hidden />
+      <img id="preview" alt="" hidden />
+    </section>
+
+    <section class="controls">
+      <div class="row">
+        <label>OCR
+          <select id="ocr"></select>
+        </label>
+        <label>Analysis
+          <select id="analysis"></select>
+        </label>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="vertical" checked />
+        Vertical text (tategaki)
+      </label>
+      <button id="go" disabled>Analyze</button>
+    </section>
+
+    <section id="status" class="status" hidden></section>
+
+    <section id="result" class="result" hidden>
+      <div class="block">
+        <h2>Original <small id="ocrBackendLabel"></small></h2>
+        <p id="original" class="jp" lang="ja"></p>
+      </div>
+      <div class="block">
+        <h2>Translation <small id="analysisBackendLabel"></small></h2>
+        <p id="translation"></p>
+      </div>
+      <div class="block" id="readingBlock" hidden>
+        <h2>Reading</h2>
+        <p id="reading" class="jp" lang="ja"></p>
+      </div>
+      <div class="block" id="tokensBlock" hidden>
+        <h2>Word breakdown</h2>
+        <div id="tokens" class="tokens"></div>
+      </div>
+      <div class="block" id="grammarBlock" hidden>
+        <h2>Grammar</h2>
+        <ul id="grammar"></ul>
+      </div>
+      <div class="block" id="notesBlock" hidden>
+        <h2>Notes</h2>
+        <p id="notes"></p>
+      </div>
+      <p id="timing" class="timing"></p>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
